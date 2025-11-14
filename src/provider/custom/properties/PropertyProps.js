@@ -17,8 +17,9 @@ import {
 import { without } from 'min-dash';
 
 
-export function PropertyProps({ element, injector, namespace = 'custom' }) {
+export function PropertyProps({ element, injector, comboOptions = [] }) {
 
+  const namespace = 'custom';
   if (!isAny(element, ['bpmn:Task'])) {
     return;
   }
@@ -43,7 +44,8 @@ export function PropertyProps({ element, injector, namespace = 'custom' }) {
       entries: Property({
         idPrefix: id,
         element,
-        property
+        property,
+        comboOptions: comboOptions
       }),
       autoFocusEntry: id + '-TaskProperty',
       remove: removeFactory({ commandStack, element, property, namespace })
@@ -96,7 +98,7 @@ function removeFactory({ commandStack, element, property, namespace }) {
           moddleElement: extensionElements,
           properties: {
             values: without(extensionElements.get('values'), properties)
-          }
+          },
         }
       });
     }
@@ -129,7 +131,7 @@ function addFactory({ bpmnFactory, commandStack, element, namespace }) {
         context: {
           element,
           moddleElement: businessObject,
-          properties: { extensionElements }
+          properties: { extensionElements },
         }
       });
     }

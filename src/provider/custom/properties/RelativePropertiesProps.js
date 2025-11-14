@@ -17,8 +17,9 @@ import {
 import { without } from 'min-dash';
 
 
-export function RelativePropertiesProps({ element, injector, namespace = 'custom' }) {
+export function RelativePropertiesProps({ element, injector, comboOptions = [] }) {
 
+  const namespace = 'custom';
   if (!isAny(element, ['bpmn:Task'])) {
     return;
   }
@@ -43,7 +44,8 @@ export function RelativePropertiesProps({ element, injector, namespace = 'custom
       entries: RelativeProperty({
         idPrefix: id,
         element,
-        property
+        property,
+        comboOptions: comboOptions
       }),
       autoFocusEntry: id + '-relavtiveProperty',
       remove: removeFactory({ commandStack, element, property, namespace })

@@ -11,10 +11,7 @@ import { useService } from '../../../hooks';
 // import hooks from the vendored preact package
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
 
-let attributesDataList;
-let userNaw = window.naw; // global variable from the bpmn-naw package
-
-export function AttributesProps(element) {
+export function AttributesProps(element, comboOptions = []) {
   if (!isAny(element, ['bpmn:Task', 'bpmn:Process', 'bpmn:Participant' ])) {
     return [];
   }
@@ -23,13 +20,14 @@ export function AttributesProps(element) {
       id: 'newAttribute',
       element,
       component: NewAttribute,
-      isEdited: isSelectEntryEdited
+      isEdited: isSelectEntryEdited,
+      comboOptions: comboOptions
     }
   ];
 }
 
 function NewAttribute(props) {
-  const { element, id } = props;
+  const { element, id, comboOptions } = props;
 
   const modeling = useService('modeling');
   const translate = useService('translate');
@@ -50,45 +48,7 @@ function NewAttribute(props) {
 
   useEffect(() => {
     function fetchAttriNames() {
-
-      if(userNaw == undefined || userNaw == null){
-        attributesDataList = [];
-      }
-
-      if(attributesDataList){
-        setAttriNames(attributesDataList);
-        return;
-      }
-
-      let dsDataFlowBpmnDto = new userNaw.dataSet("DataFlowBpmnDto");
-      let dsDataFlowBpmnListDto = new userNaw.dataSet("DataFlowBpmnListDto");
-
-      userNaw.submit({
-        requestDS: dsDataFlowBpmnDto,
-        responseDS: dsDataFlowBpmnListDto,
-        paramName: "dataFlowBpmnDto",
-        before: function (header, dataset) {
-            dataset.reset();
-            header.set({
-                uri: "/bpm/bpm1001/searchCboxForAttrGrNm"
-            });
-            dataset.autoBind = false;
-            return true;
-        },
-        callback: function (header, dataset) {
-            if (onsite.isError(header, dataset)) {
-                onsite.messageBox(header, "");
-                return;
-            }
-            attributesDataList = dataset.get("dataFlowBpmnListDto");
-            setAttriNames(attributesDataList);
-        },
-        error: function (header, dataset) {
-            onsite.messageBox("", "COM000067");
-        }
-    }); 
-
-
+      setAttriNames(comboOptions);
     }
 
     fetchAttriNames();
@@ -100,10 +60,7 @@ function NewAttribute(props) {
         label: '',
         value: undefined
       },
-      ...attriNames.map(attri => ({
-        label: attri.value01,
-        value: attri.value02
-      }))
+      ...attriNames
     ];
   };
 

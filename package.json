@@ -1,6 +1,6 @@
 {
-  "name": "bpmn-js-properties-panel",
-  "version": "5.2.0",
+  "name": "anx-bpmn-js-properties-panel",
+  "version": "1.0.1",
   "description": "A simple properties panel for bpmn-js",
   "files": [
     "dist"
@@ -55,7 +55,6 @@
     "min-dash": "^4.1.1",
     "min-dom": "^4.1.0",
     "preact-markup": "^2.1.1",
-    "react-svg-core": "^3.0.3",
     "semver-compare": "^1.0.0",
     "uuid": "^9.0.0"
   },

@@ -49,7 +49,7 @@ import TooltipProvider from 'src/contextProvider/zeebe/TooltipProvider';
 
 import GroupManagementProvider from 'src/provider/group-management';
 
-import CustomPropertiesProvider from '../../src/provider/custom';
+import createCustomPropsModule from '../../src/provider/custom';
 
 import CustomModdleDescriptor from "../../src/descriptors/custom.json";
 
@@ -180,7 +180,7 @@ describe('<BpmnPropertiesPanelRenderer>', function() {
           CamundaPropertiesProvider,
           CreateAppendAnythingModule,
           GroupManagementProvider,
-          CustomPropertiesProvider
+          CustomPropertiesProvider=> createCustomPropsModule({})
         ],
         moddleExtensions: {
           custom:CustomModdleDescriptor,
