@@ -4,35 +4,34 @@ import {
 } from '../../../hooks';
 import { useEffect, useState } from '@bpmn-io/properties-panel/preact/hooks';
 
-let nextProcessDataList;
-let prevProcessDataList;
-let childProcessDataList;
-let userNaw = window.naw; // global variable from the bpmn-naw package  
-
 export default function RelativeProperty(props) {
 
   const {
     idPrefix,
-    property
+    property,
+    comboOptions
   } = props;
 
-  const entries = [ {
+  const entries = [{
     id: idPrefix + '-NextProcess',
     component: NextProcess,
     idPrefix,
-    property
+    property,
+    comboOptions
   },
   {
     id: idPrefix + '-ChildProcess',
     component: ChildProcess,
     idPrefix,
-    property
-  },{
+    property,
+    comboOptions
+  }, {
     id: idPrefix + '-PrevProcess',
     component: PrevProcess,
     idPrefix,
-    property
-  } ];
+    property,
+    comboOptions
+  }];
 
   return entries;
 }
@@ -41,7 +40,8 @@ function NextProcess(props) {
   const {
     idPrefix,
     element,
-    property
+    property,
+    comboOptions
   } = props;
 
   const commandStack = useService('commandStack');
@@ -62,51 +62,15 @@ function NextProcess(props) {
     return property.next;
   };
 
-  const [ relates, setRelates ] = useState([]);
+  const [relates, setRelates] = useState([]);
 
   useEffect(() => {
     function fetchSpells() {
-
-      if(userNaw == undefined){
-        nextProcessDataList = {};
-      }
-
-      if (nextProcessDataList) {
-        setRelates(nextProcessDataList);
-        return;
-      }
-
-      let dsDataFlowBpmnDto = new userNaw.dataSet("DataFlowBpmnDto");
-      let dsDataFlowBpmnListDto = new userNaw.dataSet("DataFlowBpmnListDto");
-      userNaw.submit({
-        requestDS: dsDataFlowBpmnDto,
-        responseDS: dsDataFlowBpmnListDto,
-        paramName: "dataFlowBpmnDto",
-        before: function (header, dataset) {
-          dataset.reset();
-          header.set({
-            uri: "/bpm/bpm1001/searchCboxForAttrGrId"
-          });
-          dataset.autoBind = false;
-          return true;
-        },
-        callback: function (header, dataset) {
-          if (onsite.isError(header, dataset)) {
-            onsite.messageBox(header, "");
-            return;
-          }
-          nextProcessDataList = dataset.get("dataFlowBpmnListDto");
-          setRelates(nextProcessDataList);
-        },
-        error: function (header, dataset) {
-          onsite.messageBox("", "COM000067");
-        }
-      }); 
-
+      setRelates(comboOptions);
     }
 
     fetchSpells();
-  }, [ setRelates ]);
+  }, [setRelates]);
 
   const getOptions = () => {
     return [
@@ -114,10 +78,7 @@ function NextProcess(props) {
         label: '',
         value: undefined
       },
-      ...relates.map(spell => ({
-        label: spell.value01,
-        value: spell.value02
-      }))
+      ...relates
     ];
   };
 
@@ -136,7 +97,8 @@ function ChildProcess(props) {
   const {
     idPrefix,
     element,
-    property
+    property,
+    comboOptions
   } = props;
 
   const commandStack = useService('commandStack');
@@ -157,51 +119,15 @@ function ChildProcess(props) {
     return property.child;
   };
 
-  const [ relates, setRelates ] = useState([]);
+  const [relates, setRelates] = useState([]);
 
   useEffect(() => {
     function fetchSpells() {
-
-      if(userNaw == undefined) {
-        childProcessDataList = {};
-      }
-
-      if (childProcessDataList) {
-        setRelates(childProcessDataList);
-        return;
-      }
-
-      let dsDataFlowBpmnDto = new userNaw.dataSet("DataFlowBpmnDto");
-      let dsDataFlowBpmnListDto = new userNaw.dataSet("DataFlowBpmnListDto");
-      userNaw.submit({
-        requestDS: dsDataFlowBpmnDto,
-        responseDS: dsDataFlowBpmnListDto,
-        paramName: "dataFlowBpmnDto",
-        before: function (header, dataset) {
-          dataset.reset();
-          header.set({
-            uri: "/bpm/bpm1001/searchCboxForAttrGrId"
-          });
-          dataset.autoBind = false;
-          return true;
-        },
-        callback: function (header, dataset) {
-          if (onsite.isError(header, dataset)) {
-            onsite.messageBox(header, "");
-            return;
-          }
-          childProcessDataList = dataset.get("dataFlowBpmnListDto");
-          setRelates(childProcessDataList);
-        },
-        error: function (header, dataset) {
-          onsite.messageBox("", "COM000067");
-        }
-      }); 
-
+      setRelates(comboOptions);
     }
 
     fetchSpells();
-  }, [ setRelates ]);
+  }, [setRelates]);
 
   const getOptions = () => {
     return [
@@ -209,10 +135,7 @@ function ChildProcess(props) {
         label: '',
         value: undefined
       },
-      ...relates.map(spell => ({
-        label: spell.value01,
-        value: spell.value02
-      }))
+      ...relates
     ];
   };
 
@@ -231,7 +154,8 @@ function PrevProcess(props) {
   const {
     idPrefix,
     element,
-    property
+    property,
+    comboOptions
   } = props;
 
   const commandStack = useService('commandStack');
@@ -243,7 +167,7 @@ function PrevProcess(props) {
       element,
       moddleElement: property,
       properties: {
-        previous:value
+        previous: value
       }
     });
   };
@@ -252,51 +176,15 @@ function PrevProcess(props) {
     return property.previous;
   };
 
-  const [ relates, setRelates ] = useState([]);
+  const [relates, setRelates] = useState([]);
 
   useEffect(() => {
     function fetchSpells() {
-
-      if (userNaw == undefined) {
-        prevProcessDataList = {};
-      }
-
-      if (prevProcessDataList) {
-        setRelates(prevProcessDataList);
-        return;
-      }
-
-      let dsDataFlowBpmnDto = new userNaw.dataSet("DataFlowBpmnDto");
-      let dsDataFlowBpmnListDto = new userNaw.dataSet("DataFlowBpmnListDto");
-      userNaw.submit({
-        requestDS: dsDataFlowBpmnDto,
-        responseDS: dsDataFlowBpmnListDto,
-        paramName: "dataFlowBpmnDto",
-        before: function (header, dataset) {
-          dataset.reset();
-          header.set({
-            uri: "/bpm/bpm1001/searchCboxForAttrGrId"
-          });
-          dataset.autoBind = false;
-          return true;
-        },
-        callback: function (header, dataset) {
-          if (onsite.isError(header, dataset)) {
-            onsite.messageBox(header, "");
-            return;
-          }
-          prevProcessDataList = dataset.get("dataFlowBpmnListDto");
-          setRelates(prevProcessDataList);
-        },
-        error: function (header, dataset) {
-          onsite.messageBox("", "COM000067");
-        }
-      }); 
-
+      setRelates(comboOptions);
     }
 
     fetchSpells();
-  }, [ setRelates ]);
+  }, [setRelates]);
 
   const getOptions = () => {
     return [
@@ -304,10 +192,7 @@ function PrevProcess(props) {
         label: '',
         value: undefined
       },
-      ...relates.map(spell => ({
-        label: spell.value01,
-        value: spell.value02
-      }))
+      ...relates
     ];
   };
 

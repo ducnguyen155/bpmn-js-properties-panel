@@ -32,7 +32,9 @@ const CUSTOM_GROUPS = [
  * @param {PropertiesPanel} propertiesPanel
  * @param {Function} injector
  */
-export default function CustomPropertiesProvider(propertiesPanel, injector) {
+export default function CustomPropertiesProvider(propertiesPanel, injector, comboOptions) {
+
+    const normalizedComboOptions = normalizeComboOptions(comboOptions);
 
     // API ////////
 
@@ -55,13 +57,13 @@ export default function CustomPropertiesProvider(propertiesPanel, injector) {
          */
         //contract: if a group returns null, it should not be displayed at all
         return (groups) => {
-            groups = groups.concat(this._getGroups(element));
+            groups = groups.concat(this._getGroups(element, injector, normalizedComboOptions));
             return groups;
           }
     };
 
-    this._getGroups = function (element) {
-        const groups = CUSTOM_GROUPS.map(createGroup => createGroup(element, injector));
+    this._getGroups = function (element, injector, comboOptionsByType) {
+        const groups = CUSTOM_GROUPS.map(createGroup => createGroup(element, injector, comboOptionsByType));
 
         // contract: if a group returns null, it should not be displayed at all
         return groups.filter(group => group !== null);
@@ -76,13 +78,14 @@ export default function CustomPropertiesProvider(propertiesPanel, injector) {
     propertiesPanel.registerProvider(LOW_PRIORITY, this);
 }
 
-CustomPropertiesProvider.$inject = ['propertiesPanel', 'injector'];
+CustomPropertiesProvider.$inject = ['propertiesPanel', 'injector', 'comboOptions'];
 
 // Create the custom group
-function CustomGroup(element, injector) {
+function CustomGroup(element, injector, comboOptionsByType) {
     const translate = injector.get('translate');
+    const attributeOptions = comboOptionsByType?.Attributes || [];
     const entries = [
-        ...AttributesProps(element), 
+        ...AttributesProps(element, attributeOptions), 
         ...IconTypeProps(element)
     ];
     const customGroup = {
@@ -99,13 +102,14 @@ function CustomGroup(element, injector) {
     return null;
 }
 
-function RelativeGroup(element, injector) {
+function RelativeGroup(element, injector, comboOptionsByType) {
     const translate = injector.get('translate');
+    const relativeOptions = comboOptionsByType?.AttributesProps || [];
     const group = {
         label: translate('Relative process'),
         id: 'CamundaPlatform__ExtensionProperties',
         component: ListGroup,
-        ...RelativePropertiesProps({ element, injector})
+        ...RelativePropertiesProps({ element, injector, comboOptions: relativeOptions})
     };
 
     if (group.items) {
@@ -171,14 +175,33 @@ function ApiRelationGroup(element, injector) {
     return group;
 }
 
-function PropertyGroup(element, injector) {
+function normalizeComboOptions(comboOptions) {
+    if (Array.isArray(comboOptions)) {
+        return {
+            Attributes: comboOptions,
+            Properties: comboOptions,
+            AttributesProps: comboOptions,
+        };
+    }
+
+    const empty = [];
+
+    return {
+        Attributes: Array.isArray(comboOptions?.Attributes) ? comboOptions.Attributes : empty,
+        Properties: Array.isArray(comboOptions?.Properties) ? comboOptions.Properties : empty,
+        AttributesProps: Array.isArray(comboOptions?.AttributesProps) ? comboOptions.AttributesProps : empty,
+    };
+}
+
+function PropertyGroup(element, injector, comboOptionsByType) {
 
     const translate = injector.get('translate');
+    const propertyOptions = comboOptionsByType?.Properties || [];
     const group = {
         label: translate('Properties'),
         id: 'CamundaPlatform__TaskProperties',
         component: ListGroup,
-        ...PropertyProps({ element, injector})
+        ...PropertyProps({ element, injector, comboOptions: propertyOptions})
     };
 
     if (group.items) {

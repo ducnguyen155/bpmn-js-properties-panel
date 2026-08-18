@@ -5,6 +5,8 @@ export { default as CamundaPlatformPropertiesProviderModule } from './provider/c
 export { default as CamundaBehaviorsModule } from 'camunda-bpmn-js-behaviors/lib/camunda-platform';
 export { TooltipProvider as ZeebeTooltipProvider } from './contextProvider/zeebe';
 export { default as CustomPropertiesProvider } from './provider/custom';
+export { createCustomPropsModule } from './provider/custom';
+export { default as CustomModule } from './descriptors/custom.json';
 export { default as GroupManagementProvider } from './provider/group-management';
 // hooks
 export { useService } from './hooks';

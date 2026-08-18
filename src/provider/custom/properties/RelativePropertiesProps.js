@@ -17,8 +17,9 @@ import {
 import { without } from 'min-dash';
 
 
-export function RelativePropertiesProps({ element, injector, namespace = 'custom' }) {
+export function RelativePropertiesProps({ element, injector, comboOptions = [] }) {
 
+  const namespace = 'custom';
   if (!isAny(element, ['bpmn:Task'])) {
     return;
   }
@@ -43,10 +44,10 @@ export function RelativePropertiesProps({ element, injector, namespace = 'custom
       entries: RelativeProperty({
         idPrefix: id,
         element,
-        property
+        property,
+        comboOptions: comboOptions
       }),
-      autoFocusEntry: id + '-relavtiveProperty',
-      remove: removeFactory({ commandStack, element, property, namespace })
+      autoFocusEntry: id + '-relavtiveProperty'
     };
   });
 
@@ -57,53 +58,6 @@ export function RelativePropertiesProps({ element, injector, namespace = 'custom
   };
 }
 
-function removeFactory({ commandStack, element, property, namespace }) {
-  return function(event) {
-    event.stopPropagation();
-
-    const commands = [];
-
-    const businessObject = getRelevantBusinessObject(element);
-    const extensionElements = businessObject.get('extensionElements');
-    const properties = getProperties(businessObject, namespace);
-
-    if (!properties) {
-      return;
-    }
-
-    const propertyName = getPropertyName(namespace);
-
-    const values = without(properties.get(propertyName), property);
-
-    commands.push({
-      cmd: 'element.updateModdleProperties',
-      context: {
-        element,
-        moddleElement: properties,
-        properties: {
-          [ propertyName ]: values
-        }
-      }
-    });
-
-    // remove custom:Properties if there are no properties anymore
-    if (!values.length) {
-
-      commands.push({
-        cmd: 'element.updateModdleProperties',
-        context: {
-          element,
-          moddleElement: extensionElements,
-          properties: {
-            values: without(extensionElements.get('values'), properties)
-          }
-        }
-      });
-    }
-
-    commandStack.execute('properties-panel.multi-command-executor', commands);
-  };
-}
 
 function addFactory({ bpmnFactory, commandStack, element, namespace }) {
   return function(event) {
