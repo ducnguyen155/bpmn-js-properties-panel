@@ -61,15 +61,6 @@ export default function ApiRelationEntry(props) {
             <div style="font-weight: 600; color: #5e6c84; font-size: 11px; letter-spacing: 0.5px;">
               RELATION ${idx + 1}
             </div>
-            <div
-              style="cursor: pointer; color: #de350b;"
-              title=${translate('Remove')}
-              onClick=${() => handleDelete(item.callRefId)}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-              </svg>
-            </div>
           </div>
           <div>
             <span style="font-weight: 600;">${translate('Intent ID')}:</span>

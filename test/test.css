@@ -30,7 +30,7 @@ body {
 
 .properties-container {
   flex: none;
-  width: 360px;
+  width: 300px;
   border-left: solid 1px #cccccc;
 }
 

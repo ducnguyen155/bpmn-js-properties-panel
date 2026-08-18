@@ -25,5 +25,6 @@ export function createCustomPropsModule({ comboOptions = EMPTY_COMBO_OPTIONS } =
 
 export default {
   __init__: [ 'customPropertiesProvider' ],
-  customPropertiesProvider: [ 'type', CustomPropertiesProvider ]
+  customPropertiesProvider: [ 'type', CustomPropertiesProvider ],
+  comboOptions: ['value', EMPTY_COMBO_OPTIONS]
 };

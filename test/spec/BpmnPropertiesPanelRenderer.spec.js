@@ -155,7 +155,12 @@ describe('<BpmnPropertiesPanelRenderer>', function() {
           CreateAppendAnythingModule,
           {
             __init__: [ 'customPropertiesProvider' ],
-            customPropertiesProvider: [ 'type', CustomPropertiesProvider ]
+            customPropertiesProvider: [ 'type', CustomPropertiesProvider ],
+            comboOptions: [ 'value', { 
+              Attributes: [{ label: 'Attr 1', value: '1' }], 
+              Properties: [{ label: 'Prop 1', value: '1' }], 
+              AttributesProps: [{ label: 'AttrProp 1', value: '1' }] 
+            } ]
           }
         ],
         moddleExtensions: {
